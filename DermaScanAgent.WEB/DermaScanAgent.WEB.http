@@ -1,0 +1,6 @@
+@DermaScanAgent.WEB_HostAddress = http://localhost:5091
+
+GET {{DermaScanAgent.WEB_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
