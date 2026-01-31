@@ -1,6 +1,7 @@
 using AiAgents.DermaScanAgent.Application.Interfaces;
 using AiAgents.DermaScanAgent.Application.Services;
 using AiAgents.SkinCancerAgent.Web.Workers;
+using DermaScanAgent.Application.Interfaces;
 using DermaScanAgent.Application.ML;
 using DermaScanAgent.Application.Runners;
 using DermaScanAgent.Application.Services;
@@ -24,6 +25,7 @@ builder.Services.AddScoped<IAppDbContext>(p => p.GetRequiredService<SkinCancerAg
 
 builder.Services.AddSingleton<ISkinCancerClassifier, MLNetSkinClassifier>();
 builder.Services.AddSingleton<TrainingService>();
+builder.Services.AddScoped<ISampleReviewService, SampleReviewService>();
 builder.Services.AddSingleton<IModelTrainer>(p => p.GetRequiredService<TrainingService>());
 
 builder.Services.AddScoped<ScoringPolicy>();

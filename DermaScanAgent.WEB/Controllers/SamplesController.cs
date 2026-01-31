@@ -2,6 +2,7 @@
 using AiAgents.SkinCancerAgent.Domain.Entities;
 using AiAgents.SkinCancerAgent.Domain.Enums;
 using AiAgents.SkinCancerAgent.Web.DTOs;
+using DermaScanAgent.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,11 +14,13 @@ public class SamplesController : ControllerBase
 {
     private readonly IAppDbContext _db;
     private readonly IWebHostEnvironment _env;
+    private readonly ISampleReviewService _reviewService;
 
-    public SamplesController(IAppDbContext db, IWebHostEnvironment env)
+    public SamplesController(IAppDbContext db, IWebHostEnvironment env, ISampleReviewService reviewService)
     {
         _db = db;
         _env = env;
+        _reviewService = reviewService;
     }
 
     [HttpPost("upload")]
@@ -102,19 +105,10 @@ public class SamplesController : ControllerBase
     [HttpPost("review")]
     public async Task<IActionResult> ReviewSample([FromBody] ReviewRequestDto request)
     {
-        var sample = await _db.ImageSamples.FindAsync(request.SampleId);
-        if (sample == null) return NotFound();
+        var success = await _reviewService.ProcessReviewAsync(request.SampleId, request.Diagnosis, CancellationToken.None);
 
-        sample.Label = request.Diagnosis;
-        sample.Status = SampleStatus.Reviewed;
-
-        var settings = await _db.Settings.FirstOrDefaultAsync();
-        if (settings != null)
-        {
-            settings.NewGoldSinceLastTrain++;
-        }
-
-        await _db.SaveChangesAsync(CancellationToken.None);
+        if (!success)
+            return NotFound();
 
         return Ok(new { Message = "Review saved. Retrain counter updated." });
     }
