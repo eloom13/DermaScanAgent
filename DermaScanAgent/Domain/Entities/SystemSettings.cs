@@ -10,4 +10,5 @@ public class SystemSettings : IPercept
     public int RetrainGoldThreshold { get; set; }
     public float AutoThresholdHigh { get; set; }
     public float AutoThresholdLow { get; set; }
+    public string ModelVersion { get; set; } = "1.0.0";
 }

@@ -46,6 +46,7 @@ public class RetrainAgentRunner : SoftwareAgent<SystemSettings, RetrainAction, R
         if (newVersion != "TRAINING_FAILED" && newVersion != "SKIPPED_BAD_DATA")
         {
             settings.NewGoldSinceLastTrain = 0;
+            settings.ModelVersion = newVersion;
             await _db.SaveChangesAsync(ct);
             return new RetrainResult { Version = newVersion };
         }
