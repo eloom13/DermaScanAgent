@@ -96,8 +96,8 @@ public class SamplesController : ControllerBase
             {
                 s.Id,
                 ImagePath = $"/images/{Path.GetFileName(s.ImagePath)}",
-                SuggestedLabel = s.Predictions.OrderByDescending(p => p.Score).First().PredictedLabel,
-                Confidence = $"{(s.Predictions.OrderByDescending(p => p.Score).First().Score * 100):F1}%"
+                SuggestedLabel = s.Predictions.OrderByDescending(p => p.Score).Select(p => p.PredictedLabel).FirstOrDefault() ?? "Na čekanju",
+                Confidence = s.Predictions.OrderByDescending(p => p.Score).Select(p => $"{(p.Score * 100):F1}%").FirstOrDefault() ?? "0%"
             })
             .ToListAsync();
 
