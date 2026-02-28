@@ -27,6 +27,7 @@ builder.Services.AddSingleton<ISkinCancerClassifier, MLNetSkinClassifier>();
 builder.Services.AddSingleton<TrainingService>();
 builder.Services.AddScoped<ISampleReviewService, SampleReviewService>();
 builder.Services.AddSingleton<IModelTrainer>(p => p.GetRequiredService<TrainingService>());
+builder.Services.AddScoped<ILearningProofService, LearningProofService>();
 
 builder.Services.AddScoped<ScoringPolicy>();
 builder.Services.AddScoped<ScoringAgentRunner>();

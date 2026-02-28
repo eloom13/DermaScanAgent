@@ -15,12 +15,14 @@ public class SamplesController : ControllerBase
     private readonly IAppDbContext _db;
     private readonly IWebHostEnvironment _env;
     private readonly ISampleReviewService _reviewService;
+    private readonly ILearningProofService _proofService;
 
-    public SamplesController(IAppDbContext db, IWebHostEnvironment env, ISampleReviewService reviewService)
+    public SamplesController(IAppDbContext db, IWebHostEnvironment env, ISampleReviewService reviewService, ILearningProofService proofService)
     {
         _db = db;
         _env = env;
         _reviewService = reviewService;
+        _proofService = proofService;
     }
 
     [HttpPost("upload")]
@@ -143,6 +145,15 @@ public class SamplesController : ControllerBase
             .ToListAsync(CancellationToken.None);
 
         return Ok(results);
+    }
+
+    [HttpPost("prove-learning")]
+    public async Task<IActionResult> ProveLearning([FromQuery] string imagePath)
+    {
+        if (string.IsNullOrEmpty(imagePath)) return BadRequest("Putanja do slike je obavezna.");
+
+        var result = await _proofService.RunProofAsync(imagePath);
+        return Ok(result);
     }
 
     public class IdsRequestDto
